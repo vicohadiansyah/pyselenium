@@ -15,11 +15,20 @@ def driver():
     # Close the WebDriver instance
     driver.quit()
 
-def test_login(driver):
-    driver.get("https://trytestingthis.netlify.app/index.html")
-    driver.find_element(By.ID,"uname").send_keys("test")
-    driver.find_element(By.ID, "pwd").send_keys("test")
-    driver.find_element(By.XPATH,"//input[@value='Login']").click()
+@pytest.mark.parametrize("username, password ", [
+    ("test", "test"),
+    ("user1", "test"),
+    ("user2", "test"),
+])
 
+def test_login(driver, username, password):
+    driver.get("https://trytestingthis.netlify.app/index.html")
+    username_filed = driver.find_element(By.ID,"uname")
+    password_field = driver.find_element(By.ID, "pwd")
+    submit_button = driver.find_element(By.XPATH,"//input[@value='Login']")
+
+    username_filed.send_keys(username)
+    password_field.send_keys(password)
+    submit_button.click()
     assert "Successful" in driver.page_source
 
